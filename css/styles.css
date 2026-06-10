@@ -881,3 +881,7 @@ a.cite.cite-flash { animation: citePulse 1.1s var(--ease-out) 1; }
 /* Keep the Pin button from overlapping the statute-card header text (rail variant only;
    the popover variant uses the narrower close button) */
 .statute-rail .statute-card-head { padding-right: 96px; }
+
+/* Favorable / unfavorable deltas in article tables (green good, red bad) */
+.article td.pos { color: var(--good); font-weight: 600; }
+.article td.neg { color: var(--bad); font-weight: 600; }

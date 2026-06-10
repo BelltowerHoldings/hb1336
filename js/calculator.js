@@ -189,9 +189,9 @@ function renderScenarios(inp, out) {
     row('DO NOTHING (baseline) — grant, deposit-only at current deposit size', null, null) +
     row(liveLabel, 'live', 'live', 'central-row') +
     row('HB 1336 at current r, 50% need RCD', 'live', 0.50) +
+    row('HB 1336 at 50% r, 50% need RCD (depressed recovery, moderate RCD demand)', 0.50, 0.50) +
     row('HB 1336 at current r, 100% need RCD (worst-case RCD demand)', 'live', 1.00) +
-    row('HB 1336 at 70% r, 100% need RCD (very conservative)', 0.70, 1.00) +
-    row('HB 1336 at 50% r, 50% need RCD (deep stress test)', 0.50, 0.50);
+    row('HB 1336 at 70% r, 100% need RCD (deep stress test — depressed recovery and worst-case demand)', 0.70, 1.00);
 }
 
 function renderHeatmap(inp, out) {
