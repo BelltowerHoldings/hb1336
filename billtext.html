@@ -20,6 +20,7 @@
       <a href="billtext.html">Bill Text</a>
       <a href="analysis.html">Full Analysis</a>
       <a href="calculator.html">Rental Assistance Capital Model</a>
+      <a href="faq.html">FAQ</a>
       <a href="downloads.html">Resources</a>
     </nav>
   </div>
@@ -296,6 +297,7 @@
       <a href="billtext.html">Bill Text</a> ·
       <a href="analysis.html">Full Analysis</a> ·
       <a href="calculator.html">Rental Assistance Capital Model</a> ·
+      <a href="faq.html">FAQ</a> ·
       <a href="downloads.html">Resources</a>
     </div>
   </div>
@@ -306,14 +308,21 @@
 <script src="js/xrefmap.js"></script>
 <script src="js/cards.js"></script>
 <script>
-  document.querySelectorAll('.bill-tab').forEach(function (t) {
-    t.addEventListener('click', function () {
-      document.querySelectorAll('.bill-tab').forEach(function (x) { x.classList.toggle('on', x === t); });
-      document.querySelectorAll('.bill-pane').forEach(function (p) {
-        p.classList.toggle('hidden', p.id !== 'bill-' + t.dataset.bill);
-      });
-      document.querySelectorAll('.bill-pane .reveal').forEach(function (r) { r.classList.add('in'); });
+  /* Tab switching. The active view is recorded in the URL hash (history.replaceState,
+     so no extra history entries) so that returning via the back button restores the
+     view you were in. Arriving via plain menu navigation (no hash) resets to default. */
+  window.__setBillTab = function (name, persist) {
+    var btn = document.querySelector('.bill-tab[data-bill="' + name + '"]');
+    if (!btn) return;
+    document.querySelectorAll('.bill-tab').forEach(function (x) { x.classList.toggle('on', x === btn); });
+    document.querySelectorAll('.bill-pane').forEach(function (p) {
+      p.classList.toggle('hidden', p.id !== 'bill-' + name);
     });
+    document.querySelectorAll('.bill-pane .reveal').forEach(function (r) { r.classList.add('in'); });
+    if (persist) history.replaceState(null, '', '#view-' + name);
+  };
+  document.querySelectorAll('.bill-tab').forEach(function (t) {
+    t.addEventListener('click', function () { window.__setBillTab(t.dataset.bill, true); });
   });
 </script>
 
@@ -405,6 +414,7 @@
       if (sel) sel.classList.remove('sel');
       sel = pEl;
       pEl.classList.add('sel');
+      history.replaceState(null, '', '#view-interactive/' + encodeURIComponent(pEl.dataset.prov));
       var h = render(pEl.dataset.prov);
       var rail = document.getElementById('billXref');
       if (window.getComputedStyle(rail).display === 'none') {
@@ -419,6 +429,25 @@
         document.body.appendChild(sheet);
       }
     });
+
+    /* ----- restore the view recorded in the hash (back/forward navigation) ----- */
+    var hm = location.hash.match(/^#view-(intro|house|senate|interactive)(?:\/(.+))?$/);
+    if (hm && window.__setBillTab) {
+      window.__setBillTab(hm[1], false);
+      if (hm[1] === 'interactive' && hm[2]) {
+        var want = decodeURIComponent(hm[2]);
+        var target = null;
+        doc.querySelectorAll('[data-prov]').forEach(function (el) {
+          if (!target && el.dataset.prov === want) target = el;
+        });
+        if (target) {
+          sel = target;
+          target.classList.add('sel');
+          render(want);
+          setTimeout(function () { target.scrollIntoView({ block: 'center' }); }, 80);
+        }
+      }
+    }
   })();
 </script>
 </body>
