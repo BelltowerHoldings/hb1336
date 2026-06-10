@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HB 1336 — Rental Assistance Capital Model</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --primary:#1F4E79;
+    --primary-light:#D9E1F2;
+    --accent:#FFF2CC;
+    --border:#cbd5e0;
+    --muted:#6b7280;
+    --good:#0c6b3f;
+    --bad:#b91c1c;
+    --bg:#fafafa;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #111827;
+    background: var(--bg);
+    margin: 0;
+    padding: 24px;
+  }
+  h1 { font-size: 22px; margin: 0 0 4px 0; color: var(--primary); }
+  h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: white;
+    background: var(--primary);
+    padding: 8px 12px;
+    margin: 0 0 12px 0;
+    border-radius: 4px;
+  }
+  h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 6px 10px;
+    margin: 16px 0 8px 0;
+    border-radius: 3px;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 24px 0; max-width: 1100px; }
+  .container { max-width: 1400px; margin: 0 auto; }
+  .grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  .panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 110px;
+    gap: 8px;
+    align-items: center;
+    margin: 6px 0;
+  }
+  .input-row label {
+    font-size: 13px;
+    color: #374151;
+  }
+  .input-row .hint {
+    grid-column: 1 / -1;
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: -2px;
+    margin-bottom: 4px;
+  }
+  input[type=number], select {
+    width: 100%;
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: inherit;
+    text-align: right;
+    color: #0000FF;
+    background: white;
+  }
+  input[type=number]:focus, select:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: -1px;
+  }
+  select { color: #0000FF; text-align: left; }
+  .calc-output {
+    background: #f3f4f6;
+    color: #111827;
+    text-align: right;
+    padding: 5px 8px;
+    border-radius: 3px;
+    font-variant-numeric: tabular-nums;
+  }
+  .results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .result-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+    text-align: center;
+  }
+  .result-card .label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .result-card .value {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--primary);
+    font-variant-numeric: tabular-nums;
+    margin-top: 4px;
+  }
+  .result-card.highlight { background: var(--accent); }
+  .result-card .sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  th, td {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    text-align: right;
+  }
+  th {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    font-size: 12px;
+  }
+  td:first-child, th:first-child { text-align: left; }
+  tr:nth-child(even) td { background: #f9fafb; }
+  .tier-table input { color: #0000FF; }
+  .tier-table .total-row td { font-weight: 600; background: var(--primary-light); }
+  .tier-warning { color: var(--bad); font-weight: 600; }
+  .tier-ok { color: var(--good); }
+  .chart-container { position: relative; height: 320px; margin-top: 12px; }
+  .scenario-table .pos { color: var(--good); font-weight: 600; }
+  .scenario-table .neg { color: var(--bad); font-weight: 600; }
+  .scenario-table .baseline-row td { background: var(--primary-light); font-weight: 600; }
+  .scenario-table .central-row td { background: var(--accent); font-weight: 600; }
+  .heatmap td.cell { text-align: right; padding: 6px 10px; }
+  .formula-note {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 6px;
+  }
+  .section-intro {
+    font-size: 13px;
+    color: #374151;
+    margin: 0 0 12px 0;
+    line-height: 1.55;
+  }
+  .footer {
+    margin-top: 24px;
+    padding: 16px 20px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.55;
+  }
+  .footer h3 { margin-top: 16px; }
+  .footer h3:first-child { margin-top: 0; }
+  .footer .math {
+    font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", Georgia, "Times New Roman", serif;
+    font-size: 14px;
+    background: #f9fafb;
+    padding: 8px 12px;
+    border-left: 3px solid var(--primary);
+    margin: 6px 0;
+    line-height: 1.7;
+  }
+  .footer .math i { font-style: italic; }
+  .footer dl { display: grid; grid-template-columns: 80px 1fr; gap: 4px 12px; margin: 0; }
+  .footer dt {
+    font-family: "Cambria Math", "STIX Two Math", Georgia, serif;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  .footer dd { margin: 0; }
+  .footer .caveat { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 12px; }
+  @media print {
+    body { background: white; padding: 0; }
+    .panel { break-inside: avoid; }
+    h2 { background: #d1d5db !important; color: black !important; -webkit-print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>HB 1336 — Rental Assistance Capital Model</h1>
+<p class="subtitle">
+  Incremental impact of HB 1336 on what private charitable capital can do for security-deposit assistance.
+  Baseline = do nothing (charity funds standard deposits as one-way grants; RCDs do not exist).
+  Policy = HB 1336 passes (charity funds deposit + RCD where needed; both refundable to the third-party payor under RSA 540-A:7, I(b) and recycled).
+  Edit any input below; everything recomputes live.
+</p>
+
+<div class="grid">
+
+<!-- ============= LEFT: INPUTS ============= -->
+<div>
+  <div class="panel">
+    <h2>Inputs — Funding &amp; Deployment</h2>
+
+    <div class="input-row">
+      <label>Annual charitable inflow (gross)</label>
+      <input type="number" id="inflow" value="1000000" min="0" step="50000">
+      <div class="hint">Donations raised per year before overhead.</div>
+    </div>
+
+    <div class="input-row">
+      <label>Overhead / admin rate (%)</label>
+      <input type="number" id="overhead" value="30" min="0" max="100" step="1">
+      <div class="hint">Share of gross consumed by fundraising &amp; administration.</div>
+    </div>
+
+    <div class="input-row">
+      <label>Net new capital per year</label>
+      <div class="calc-output" id="netCapital">—</div>
+    </div>
+
+    <div class="input-row">
+      <label>Average security deposit ($)</label>
+      <input type="number" id="deposit" value="2000" min="0" step="50">
+      <div class="hint">Capped at 1 month rent under RSA 540-A:6 (existing law).</div>
+    </div>
+
+    <div class="input-row">
+      <label>RCD size as multiple of deposit (×)</label>
+      <input type="number" id="rcdMult" value="1.0" min="0" max="1.0" step="0.1">
+      <div class="hint">HB 1336 caps the RCD at one additional month of rent (1.0× the deposit).</div>
+    </div>
+
+    <div class="input-row">
+      <label><strong>Share of assisted households also needing an RCD (%)</strong></label>
+      <input type="number" id="bundlePct" value="30" min="0" max="100" step="1">
+      <div class="hint">The rest receive the standard deposit only. Many applicants need just deposit help (savings shortfall); a subset additionally fails one of the five statutory criteria and needs an RCD too.</div>
+    </div>
+
+    <div class="input-row">
+      <label>Average capital deployed per assisted household</label>
+      <div class="calc-output" id="capPerHH">—</div>
+    </div>
+
+    <div class="input-row">
+      <label>Average tenancy before refund (yrs) [L]</label>
+      <input type="number" id="tenancy" value="3" min="1" max="10" step="1">
+      <div class="hint">Whole years 1–5; longer L = slower recycling = more conservative.</div>
+    </div>
+
+    <div class="input-row">
+      <label>Apply overhead to recycled capital?</label>
+      <select id="recycleOh">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+      <div class="hint">No = recycled dollars need no re-fundraising.</div>
+    </div>
+
+    <h3>Recovery Rate — Anchored to TransUnion Tiers</h3>
+
+    <div class="input-row">
+      <label>Recovery method</label>
+      <select id="recoveryMethod">
+        <option value="tier">Tier-weighted</option>
+        <option value="manual">Manual override</option>
+      </select>
+    </div>
+
+    <div class="input-row">
+      <label>Manual recovery rate r (%) — used only if Manual override</label>
+      <input type="number" id="manualR" value="70" min="0" max="100" step="1">
+    </div>
+
+    <div class="input-row">
+      <label>Loss-given-eviction (%)</label>
+      <input type="number" id="lge" value="100" min="0" max="100" step="5">
+      <div class="hint">100% = full impound when an eviction is filed and reduced to judgment.</div>
+    </div>
+
+    <div class="input-row">
+      <label>Base non-recovery (%)</label>
+      <input type="number" id="baseNR" value="15" min="0" max="100" step="1">
+      <div class="hint">Avg lawful deductions in non-evicted tenancies (wear, cleaning, damages). 5–15% defensible.</div>
+    </div>
+
+    <div class="input-row">
+      <label>Population-weighted eviction rate</label>
+      <div class="calc-output" id="weightedEv">—</div>
+    </div>
+
+    <div class="input-row">
+      <label><strong>Effective recovery rate r</strong></label>
+      <div class="calc-output" id="effectiveR" style="background:var(--accent); font-weight:600;">—</div>
+    </div>
+
+    <h3>Credit Tier Population Mix</h3>
+    <p class="hint" style="margin: 4px 0 8px;">TransUnion ResidentScore eviction rates by credit tier. Edit the population mix to match the served population.</p>
+    <table class="tier-table">
+      <thead>
+        <tr><th>Tier</th><th>Eviction rate</th><th>Pop. mix</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>350–449</td><td>12.3%</td><td><input type="number" class="tierMix" data-i="0" value="5" min="0" max="100" step="1"></td></tr>
+        <tr><td>450–499</td><td>9.4%</td><td><input type="number" class="tierMix" data-i="1" value="15" min="0" max="100" step="1"></td></tr>
+        <tr><td>500–549</td><td>5.8%</td><td><input type="number" class="tierMix" data-i="2" value="35" min="0" max="100" step="1"></td></tr>
+        <tr><td>550–649</td><td>1.3%</td><td><input type="number" class="tierMix" data-i="3" value="35" min="0" max="100" step="1"></td></tr>
+        <tr><td>650–749</td><td>0.3%</td><td><input type="number" class="tierMix" data-i="4" value="10" min="0" max="100" step="1"></td></tr>
+        <tr class="total-row"><td colspan="2">Total (must equal 100%)</td><td id="tierTotal" class="tier-ok">100%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============= RIGHT: RESULTS + CHART ============= -->
+<div>
+  <div class="panel">
+    <h2>Results — 10-Year Horizon</h2>
+
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="label">Do Nothing — Households / 10 yrs</div>
+        <div class="value" id="doNothingHH">—</div>
+        <div class="sub">grant, deposit-only (current law)</div>
+      </div>
+      <div class="result-card highlight">
+        <div class="label">HB 1336 — Households / 10 yrs</div>
+        <div class="value" id="hb1336HH">—</div>
+        <div class="sub">revolving, deposit + RCD where needed</div>
+      </div>
+      <div class="result-card">
+        <div class="label">Incremental Households</div>
+        <div class="value" id="incremental">—</div>
+        <div class="sub" id="incrementalPct">—</div>
+      </div>
+      <div class="result-card highlight">
+        <div class="label">Reach Multiplier</div>
+        <div class="value" id="reachMult">—</div>
+        <div class="sub">HB 1336 ÷ do nothing</div>
+      </div>
+      <div class="result-card">
+        <div class="label">Year-10 Annual Capacity — Do Nothing</div>
+        <div class="value" id="yr10Grant">—</div>
+        <div class="sub">households / yr</div>
+      </div>
+      <div class="result-card">
+        <div class="label">Year-10 Annual Capacity — HB 1336</div>
+        <div class="value" id="yr10HB">—</div>
+        <div class="sub">households / yr</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top: 16px;">
+    <h2>Cumulative Households Over 10 Years</h2>
+    <div class="chart-container">
+      <canvas id="chart"></canvas>
+    </div>
+    <p class="formula-note">
+      HB 1336 starts behind do-nothing in years 1–L (here L = average tenancy) because the first cohort's deposits haven't returned yet.
+      Once recycling begins, the curves cross and HB 1336 pulls ahead.
+    </p>
+  </div>
+
+  <div class="panel" style="margin-top: 16px;">
+    <h2>Year-by-Year</h2>
+    <table id="yearByYear">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>HB 1336<br>Capital Deployed</th>
+          <th>HB 1336<br>Households</th>
+          <th>HB 1336<br>Cumulative</th>
+          <th>Do Nothing<br>Households</th>
+          <th>Do Nothing<br>Cumulative</th>
+          <th>Year Delta<br>(HB 1336 − Do Nothing)</th>
+          <th>Cumulative Delta<br>(HB 1336 − Do Nothing)</th>
+        </tr>
+      </thead>
+      <tbody id="yearByYearBody"></tbody>
+    </table>
+    <p class="formula-note">"Year Delta" is the per-year placement difference (negative early, positive after the crossover). "Cumulative Delta" tracks the running total — this is the bottom-line incremental impact at any horizon.</p>
+  </div>
+</div>
+
+</div><!-- /.grid -->
+
+<!-- ============= FULL-WIDTH: HEADLINE SCENARIOS ============= -->
+<div class="panel" style="margin-top: 24px;">
+  <h2>Scenario Comparison: HB 1336 vs. the Do-Nothing Baseline</h2>
+  <p class="section-intro">
+    Each row below is a different combination of recovery rate <em>r</em> and the share of households needing an RCD.
+    The first row is the do-nothing baseline (current law). The highlighted "current inputs" row uses whatever you've set above.
+    The remaining rows stress-test the conclusion against more pessimistic combinations.
+  </p>
+  <table class="scenario-table">
+    <thead>
+      <tr>
+        <th>Scenario</th>
+        <th>Households / 10 yrs</th>
+        <th>vs. Do Nothing</th>
+        <th>% vs. Baseline</th>
+      </tr>
+    </thead>
+    <tbody id="scenarioBody"></tbody>
+  </table>
+</div>
+
+<!-- ============= FULL-WIDTH: BUNDLE × RECOVERY HEATMAP ============= -->
+<div class="panel" style="margin-top: 24px;">
+  <h2>Sensitivity Heatmap: Households Served Over 10 Years Under HB 1336</h2>
+  <p class="section-intro">
+    Rows vary the share of households needing an RCD; columns vary the recovery rate. All cells hold tenancy <em>L</em>, deposit size, RCD multiple, inflow, and overhead at the values you've set above.
+    <span style="color:var(--good); font-weight:600;">Green cells</span> exceed the do-nothing baseline; <span style="color:var(--bad); font-weight:600;">red cells</span> fall below it.
+    The only region where HB 1336 underperforms do-nothing is the lower-left corner — simultaneously high RCD demand and low recovery.
+  </p>
+  <table class="heatmap" id="heatmap"></table>
+</div>
+
+<div class="footer">
+  <h3>How this works</h3>
+
+  <p style="margin: 4px 0 12px 0;">
+    The model compares two worlds over a fixed horizon <i>H</i> = 10 years. Under <strong>do nothing</strong>, charity-funded deposits are one-way grants — the deposit refunds to the tenant at move-out and never returns to the fund. Under <strong>HB 1336</strong>, charity-funded deposits (and RCDs, where used) refund to the third-party payor under RSA 540-A:7, I(b) and are redeployed to the next household.
+  </p>
+
+  <h3>Variables — Indices &amp; horizon</h3>
+  <dl>
+    <dt>H</dt>      <dd>Modeling horizon, in years (fixed at 10 in this calculator)</dd>
+    <dt>t</dt>      <dd>Year index, <i>t</i> = 1, 2, …, <i>H</i></dd>
+    <dt>i</dt>      <dd>Credit-tier index, <i>i</i> = 1, …, 5 (350–449, 450–499, 500–549, 550–649, 650–749)</dd>
+  </dl>
+
+  <h3>Variables — Inputs</h3>
+  <dl>
+    <dt>N</dt>      <dd>Annual charitable inflow (gross donations per year)</dd>
+    <dt>o</dt>      <dd>Overhead rate (share of <i>N</i> consumed by fundraising &amp; admin)</dd>
+    <dt>D</dt>      <dd>Average security deposit (≤ 1 month rent under RSA 540-A:6)</dd>
+    <dt>m</dt>      <dd>RCD size as a multiple of <i>D</i>  (capped at 1.0 under HB 1336)</dd>
+    <dt>b</dt>      <dd>Share of assisted households also needing an RCD on top of the deposit</dd>
+    <dt>L</dt>      <dd>Average tenancy before refund, in years</dd>
+    <dt>f</dt>      <dd>Recycle factor: 1 if overhead is not re-charged on recycled capital; (1 − <i>o</i>) otherwise</dd>
+    <dt>p<sub>i</sub></dt>      <dd>Population share in credit tier <i>i</i></dd>
+    <dt>e<sub>i</sub></dt>      <dd>Eviction rate in credit tier <i>i</i> (TransUnion ResidentScore)</dd>
+    <dt>LGE</dt>    <dd>Loss-given-eviction (share of held capital consumed when an eviction is filed and reduced to judgment)</dd>
+    <dt>B</dt>      <dd>Base non-recovery (lawful deductions absent eviction — wear, cleaning, damages)</dd>
+  </dl>
+
+  <h3>Variables — Derived quantities</h3>
+  <dl>
+    <dt>N′</dt>     <dd>Net new capital per year &nbsp;=&nbsp; <i>N</i> × (1 − <i>o</i>)</dd>
+    <dt>ē</dt>      <dd>Population-weighted eviction rate &nbsp;=&nbsp; Σ<sub><i>i</i></sub> <i>p<sub>i</sub></i> × <i>e<sub>i</sub></i></dd>
+    <dt>r</dt>      <dd>Effective recovery rate (see formula below)</dd>
+    <dt>K</dt>      <dd>Capital deployed per assisted household under HB 1336  &nbsp;=&nbsp; <i>D</i> × (1 + <i>b</i> × <i>m</i>)</dd>
+    <dt>K<sub>0</sub></dt>      <dd>Capital deployed per assisted household under do nothing  &nbsp;=&nbsp; <i>D</i></dd>
+    <dt>C(t)</dt>   <dd>Capital deployed in year <i>t</i> under HB 1336 (see recurrence below)</dd>
+    <dt>C<sub>0</sub>(t)</dt>   <dd>Capital deployed in year <i>t</i> under do nothing &nbsp;=&nbsp; <i>N′</i> (no recycling)</dd>
+    <dt>HH(t)</dt>  <dd>Households served in year <i>t</i> under HB 1336 &nbsp;=&nbsp; <i>C</i>(<i>t</i>) / <i>K</i></dd>
+    <dt>HH<sub>0</sub></dt>     <dd>Households served per year under do nothing &nbsp;=&nbsp; <i>N′</i> / <i>K</i><sub>0</sub> &nbsp;(constant across years)</dd>
+  </dl>
+
+  <h3>Recovery rate</h3>
+  <div class="math">
+    <i>r</i> &nbsp;=&nbsp; max( 0,&nbsp; 1 &nbsp;−&nbsp; ē × LGE &nbsp;−&nbsp; <i>B</i> ) &nbsp;&nbsp;&nbsp; where &nbsp; ē &nbsp;=&nbsp; Σ<sub><i>i</i></sub> <i>p<sub>i</sub></i> × <i>e<sub>i</sub></i>
+  </div>
+  <p style="margin: 4px 0; font-size:12px; color:var(--muted);">
+    If the recovery method is set to "Manual override," <i>r</i> is taken directly from that input instead.
+  </p>
+
+  <h3>Annual capital evolution</h3>
+  <div class="math">
+    HB 1336: &nbsp;&nbsp; <i>C</i>(<i>t</i>) &nbsp;=&nbsp; <i>N′</i> &nbsp;+&nbsp; <i>f</i> × <i>r</i> × <i>C</i>(<i>t</i> − <i>L</i>) &nbsp;&nbsp;&nbsp; for <i>t</i> &gt; <i>L</i>;  &nbsp;&nbsp; <i>C</i>(<i>t</i>) = <i>N′</i> &nbsp;otherwise
+  </div>
+  <div class="math">
+    Do nothing: &nbsp;&nbsp; <i>C</i><sub>0</sub>(<i>t</i>) &nbsp;=&nbsp; <i>N′</i> &nbsp;&nbsp;&nbsp; for every <i>t</i> &nbsp; (no recycling — recovery is 0% by definition)
+  </div>
+
+  <h3>Households served</h3>
+  <div class="math">
+    HB 1336: &nbsp;&nbsp; HH(<i>t</i>) &nbsp;=&nbsp; <i>C</i>(<i>t</i>) / <i>K</i>  &nbsp;&nbsp;&nbsp;&nbsp;  cumulative: &nbsp;&nbsp; Σ<sub><i>t</i>=1..<i>H</i></sub> HH(<i>t</i>)
+  </div>
+  <div class="math">
+    Do nothing: &nbsp;&nbsp; HH<sub>0</sub> &nbsp;=&nbsp; <i>N′</i> / <i>K</i><sub>0</sub>  &nbsp;&nbsp; (constant across years)  &nbsp;&nbsp;&nbsp;&nbsp;  cumulative: &nbsp;&nbsp; <i>H</i> × HH<sub>0</sub>
+  </div>
+
+  <h3>Reach multiplier</h3>
+  <div class="math">
+    Reach multiplier &nbsp;=&nbsp; [ Σ<sub><i>t</i>=1..<i>H</i></sub> HH(<i>t</i>) ] &nbsp;÷&nbsp; [ <i>H</i> × HH<sub>0</sub> ]
+  </div>
+
+  <p class="caveat">
+    <strong>Source data:</strong> eviction rates by credit tier are from the TransUnion ResidentScore analysis cited in the HB 1336 comprehensive policy analysis.
+    <strong>Caveat:</strong> illustrative underwriting model, not a guarantee of outcomes. Real-world recovery and tenancy vary by program design and population.
+  </p>
+</div>
+
+</div><!-- /.container -->
+
+<script>
+const H = 10;  // horizon in years
+let chart = null;
+
+const fmtUSD = n => '$' + Math.round(n).toLocaleString();
+const fmtNum = n => Math.round(n).toLocaleString();
+const fmtNum1 = n => n.toFixed(1);
+const fmtMult = n => n.toFixed(2) + '×';
+const fmtPct1 = n => (n * 100).toFixed(1) + '%';
+const fmtPct2 = n => (n * 100).toFixed(2) + '%';
+const fmtSigned = n => (n >= 0 ? '+' : '') + Math.round(n).toLocaleString();
+const fmtSignedPct = n => (n >= 0 ? '+' : '') + (n * 100).toFixed(0) + '%';
+
+// Tier definitions
+const TIER_EVIC = [0.123, 0.094, 0.058, 0.013, 0.003];
+
+function readInputs() {
+  const tierMix = Array.from(document.querySelectorAll('.tierMix'))
+    .map(el => (parseFloat(el.value) || 0) / 100);
+
+  return {
+    inflow:     parseFloat(document.getElementById('inflow').value) || 0,
+    overhead:   (parseFloat(document.getElementById('overhead').value) || 0) / 100,
+    deposit:    parseFloat(document.getElementById('deposit').value) || 0,
+    rcdMult:    parseFloat(document.getElementById('rcdMult').value) || 0,
+    bundle:     (parseFloat(document.getElementById('bundlePct').value) || 0) / 100,
+    L:          Math.max(1, Math.round(parseFloat(document.getElementById('tenancy').value) || 1)),
+    recycleOh:  document.getElementById('recycleOh').value === 'yes',
+    recMethod:  document.getElementById('recoveryMethod').value,
+    manualR:    (parseFloat(document.getElementById('manualR').value) || 0) / 100,
+    lge:        (parseFloat(document.getElementById('lge').value) || 0) / 100,
+    baseNR:     (parseFloat(document.getElementById('baseNR').value) || 0) / 100,
+    tierMix:    tierMix,
+  };
+}
+
+// Returns yearly cap[] array (1-indexed, cap[0] = 0 placeholder)
+function buildCapital(inp, rOverride) {
+  const net = inp.inflow * (1 - inp.overhead);
+  const recycleFactor = inp.recycleOh ? (1 - inp.overhead) : 1;
+  const r = (rOverride !== undefined) ? rOverride : effectiveR(inp);
+  const cap = [0];
+  for (let t = 1; t <= H; t++) {
+    let c = net;
+    if (t > inp.L) c += recycleFactor * r * cap[t - inp.L];
+    cap.push(c);
+  }
+  return cap;
+}
+
+function effectiveR(inp) {
+  if (inp.recMethod === 'manual') return inp.manualR;
+  let wEv = 0;
+  for (let i = 0; i < 5; i++) wEv += TIER_EVIC[i] * inp.tierMix[i];
+  return Math.max(0, 1 - wEv * inp.lge - inp.baseNR);
+}
+
+function weightedEviction(inp) {
+  let wEv = 0;
+  for (let i = 0; i < 5; i++) wEv += TIER_EVIC[i] * inp.tierMix[i];
+  return wEv;
+}
+
+// Closed-form total revolving capital over H years
+// = net/(1-r) * (H - sum_{t=1..H} r^(floor((t-1)/L)+1))
+// Falls back to iteration when r >= 1 to avoid division by zero
+function totalCap(net, r, L, recycleFactor, H) {
+  // recycleFactor effectively scales r in the recurrence; use r_eff = recycleFactor * r
+  const rEff = recycleFactor * r;
+  if (Math.abs(1 - rEff) < 1e-9) {
+    // iterative fallback
+    const cap = [0];
+    for (let t = 1; t <= H; t++) {
+      let c = net;
+      if (t > L) c += rEff * cap[t - L];
+      cap.push(c);
+    }
+    return cap.slice(1).reduce((a, b) => a + b, 0);
+  }
+  let s = 0;
+  for (let t = 1; t <= H; t++) {
+    s += Math.pow(rEff, Math.floor((t - 1) / L) + 1);
+  }
+  return net / (1 - rEff) * (H - s);
+}
+
+function compute(inp) {
+  const net = inp.inflow * (1 - inp.overhead);
+  const capPerHH = inp.deposit * (1 + inp.bundle * inp.rcdMult);
+  const r = effectiveR(inp);
+  const wEv = weightedEviction(inp);
+  const recycleFactor = inp.recycleOh ? (1 - inp.overhead) : 1;
+  const cap = buildCapital(inp);
+  const hbHH = cap.slice(1).map(c => c / capPerHH);
+  const grantHHPerYr = net / inp.deposit;
+
+  // Cumulatives
+  const hbCum = [];
+  let acc = 0;
+  for (const h of hbHH) { acc += h; hbCum.push(acc); }
+  const grantCum = [];
+  acc = 0;
+  for (let i = 0; i < H; i++) { acc += grantHHPerYr; grantCum.push(acc); }
+
+  return {
+    inp, net, capPerHH, r, wEv, recycleFactor,
+    cap, hbHH, hbCum,
+    grantHHPerYr, grantCum,
+    hbTotal: hbCum[H - 1],
+    grantTotal: grantCum[H - 1],
+    incremental: hbCum[H - 1] - grantCum[H - 1],
+    incrementalPct: hbCum[H - 1] / grantCum[H - 1] - 1,
+    reachMult: hbCum[H - 1] / grantCum[H - 1],
+  };
+}
+
+function render() {
+  const inp = readInputs();
+  const out = compute(inp);
+
+  // Updates: live calculated fields
+  document.getElementById('netCapital').textContent = fmtUSD(out.net);
+  document.getElementById('capPerHH').textContent = fmtUSD(out.capPerHH);
+  document.getElementById('weightedEv').textContent = fmtPct2(out.wEv);
+  document.getElementById('effectiveR').textContent = fmtPct1(out.r);
+
+  // Tier total
+  const total = inp.tierMix.reduce((a, b) => a + b, 0);
+  const totalEl = document.getElementById('tierTotal');
+  totalEl.textContent = (total * 100).toFixed(0) + '%';
+  totalEl.className = Math.abs(total - 1) < 0.005 ? 'tier-ok' : 'tier-warning';
+
+  // Result cards
+  document.getElementById('doNothingHH').textContent = fmtNum(out.grantTotal);
+  document.getElementById('hb1336HH').textContent = fmtNum(out.hbTotal);
+  document.getElementById('incremental').textContent = fmtSigned(out.incremental);
+  document.getElementById('incrementalPct').textContent = fmtSignedPct(out.incrementalPct) + ' vs. do nothing';
+  document.getElementById('reachMult').textContent = fmtMult(out.reachMult);
+  document.getElementById('yr10Grant').textContent = fmtNum(out.grantHHPerYr);
+  document.getElementById('yr10HB').textContent = fmtNum(out.hbHH[H - 1]);
+
+  // Color the incremental card
+  const incCard = document.getElementById('incremental');
+  incCard.style.color = out.incremental >= 0 ? 'var(--good)' : 'var(--bad)';
+
+  // Year-by-year table
+  const tbody = document.getElementById('yearByYearBody');
+  tbody.innerHTML = '';
+  for (let t = 0; t < H; t++) {
+    const yearHHDelta = out.hbHH[t] - out.grantHHPerYr;
+    const cumDelta   = out.hbCum[t] - out.grantCum[t];
+    const yCls   = yearHHDelta >= 0 ? 'pos' : 'neg';
+    const cCls   = cumDelta    >= 0 ? 'pos' : 'neg';
+    tbody.innerHTML += `
+      <tr>
+        <td>${t + 1}</td>
+        <td>${fmtUSD(out.cap[t + 1])}</td>
+        <td>${fmtNum(out.hbHH[t])}</td>
+        <td>${fmtNum(out.hbCum[t])}</td>
+        <td>${fmtNum(out.grantHHPerYr)}</td>
+        <td>${fmtNum(out.grantCum[t])}</td>
+        <td class="${yCls}">${fmtSigned(yearHHDelta)}</td>
+        <td class="${cCls}">${fmtSigned(cumDelta)}</td>
+      </tr>
+    `;
+  }
+
+  // Headline scenarios table
+  renderScenarios(inp, out);
+
+  // Heatmap
+  renderHeatmap(inp, out);
+
+  // Chart
+  renderChart(out);
+}
+
+function renderScenarios(inp, out) {
+  const tbody = document.getElementById('scenarioBody');
+  const baseline = out.grantTotal;
+  const net = out.net;
+  const recycle = out.recycleFactor;
+
+  function row(label, rValue, bundleValue, cls = '') {
+    let hh;
+    if (rValue === null) {
+      hh = baseline;
+    } else {
+      const r = rValue === 'live' ? out.r : rValue;
+      const b = bundleValue === 'live' ? inp.bundle : bundleValue;
+      const tc = totalCap(net, r, inp.L, recycle, H);
+      const cph = inp.deposit * (1 + b * inp.rcdMult);
+      hh = tc / cph;
+    }
+    const delta = hh - baseline;
+    const pct = hh / baseline - 1;
+    if (rValue === null) {
+      return `<tr class="baseline-row">
+        <td>${label}</td>
+        <td>${fmtNum(hh)}</td>
+        <td>baseline</td>
+        <td>—</td>
+      </tr>`;
+    }
+    const deltaCls = delta >= 0 ? 'pos' : 'neg';
+    return `<tr class="${cls}">
+      <td>${label}</td>
+      <td>${fmtNum(hh)}</td>
+      <td class="${deltaCls}">${fmtSigned(delta)}</td>
+      <td class="${deltaCls}">${fmtSignedPct(pct)}</td>
+    </tr>`;
+  }
+
+  const liveLabel = `HB 1336 at your current inputs (${(inp.bundle*100).toFixed(0)}% need RCD, r ≈ ${(out.r*100).toFixed(1)}%, L = ${inp.L})  ←  central case`;
+  tbody.innerHTML =
+    row('DO NOTHING (baseline) — grant, deposit-only at current deposit size', null, null) +
+    row(liveLabel, 'live', 'live', 'central-row') +
+    row('HB 1336 at current r, 50% need RCD', 'live', 0.50) +
+    row('HB 1336 at current r, 100% need RCD (worst-case RCD demand)', 'live', 1.00) +
+    row('HB 1336 at 70% r, 100% need RCD (very conservative)', 0.70, 1.00) +
+    row('HB 1336 at 50% r, 50% need RCD (deep stress test)', 0.50, 0.50);
+}
+
+function renderHeatmap(inp, out) {
+  const rs = [0.50, 0.60, 0.70, 0.80, 0.90];
+  const bs = [0.00, 0.25, 0.50, 0.75, 1.00];
+  const baseline = out.grantTotal;
+  const net = out.net;
+  const recycle = out.recycleFactor;
+
+  let html = '<thead><tr><th>% needing RCD &nbsp;\\&nbsp; Recovery rate r</th>';
+  for (const r of rs) html += `<th>r = ${(r * 100).toFixed(0)}%</th>`;
+  html += '</tr></thead><tbody>';
+
+  for (const b of bs) {
+    html += `<tr><td><strong>${(b * 100).toFixed(0)}%</strong></td>`;
+    for (const r of rs) {
+      const tc = totalCap(net, r, inp.L, recycle, H);
+      const cph = inp.deposit * (1 + b * inp.rcdMult);
+      const hh = tc / cph;
+      const ratio = hh / baseline;
+      // green intensity if >= 1, red intensity if < 1
+      let bg;
+      if (ratio >= 1) {
+        const t = Math.min(1, (ratio - 1) / 2);   // 0 at ratio=1, 1 at ratio=3
+        const lum = 240 - Math.round(t * 130);
+        bg = `rgb(${lum},255,${lum})`;
+      } else {
+        const t = Math.min(1, (1 - ratio));        // 0 at ratio=1, 1 at ratio=0
+        const lum = 240 - Math.round(t * 80);
+        bg = `rgb(255,${lum},${lum})`;
+      }
+      html += `<td class="cell" style="background:${bg}">${fmtNum(hh)}</td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</tbody>';
+  document.getElementById('heatmap').innerHTML = html;
+}
+
+function renderChart(out) {
+  const labels = Array.from({length: H}, (_, i) => 'Yr ' + (i + 1));
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: 'HB 1336 — cumulative households',
+        data: out.hbCum,
+        borderColor: '#1F4E79',
+        backgroundColor: 'rgba(31,78,121,0.10)',
+        borderWidth: 2.5,
+        tension: 0.2,
+        fill: false,
+        pointRadius: 3,
+      },
+      {
+        label: 'Do nothing — cumulative households',
+        data: out.grantCum,
+        borderColor: '#b91c1c',
+        backgroundColor: 'rgba(185,28,28,0.10)',
+        borderWidth: 2.5,
+        tension: 0,
+        fill: false,
+        pointRadius: 3,
+        borderDash: [6, 4],
+      },
+    ],
+  };
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label + ': ' + Math.round(ctx.parsed.y).toLocaleString(),
+        },
+      },
+    },
+    scales: {
+      x: { title: { display: true, text: 'Year' } },
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'Cumulative households' },
+        ticks: { callback: v => v.toLocaleString() },
+      },
+    },
+  };
+  if (chart) {
+    chart.data = data;
+    chart.options = options;
+    chart.update();
+  } else {
+    const ctx = document.getElementById('chart').getContext('2d');
+    chart = new Chart(ctx, { type: 'line', data, options });
+  }
+}
+
+// Wire all inputs
+document.querySelectorAll('input, select').forEach(el => {
+  el.addEventListener('input', render);
+  el.addEventListener('change', render);
+});
+
+// Initial render
+render();
+</script>
+</body>
+</html>
