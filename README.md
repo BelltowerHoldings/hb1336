@@ -20,5 +20,11 @@ GitHub copy of this repo instead of drag-and-drop, set the build root to /
 with no build command. README.md and tools/ deploying alongside the site
 is harmless.
 
+## GitHub remote / deployment
+Pushed to https://github.com/BelltowerHoldings/hb1336 (Cloudflare Pages
+deploys from main). After committing to the bundle, also push to GitHub
+to trigger a deploy - this requires a fine-grained token (Contents:
+read/write) from the user; mint a fresh short-lived one per session.
+
 ## Restore / inspect
     git clone HB1336_website.bundle hb1336-site
