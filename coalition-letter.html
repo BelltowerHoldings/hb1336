@@ -11,6 +11,16 @@
    Coalition-letter annotation page — self-contained styles
    (built on the shared design tokens in css/styles.css)
    ============================================================ */
+
+/* Page-scoped, slightly punchier tier colors for the marks/chips/swatches
+   (a moderate boost over the site's muted tokens, for at-a-glance legibility).
+   These are NEW variables, so the rest of the site's palette is untouched. */
+:root {
+  --mk-error: #b23a28;   /* cleaner, more saturated brick-red */
+  --mk-frame: #a8801e;   /* clearer amber-gold (less olive/muddy) */
+  --mk-agree: #2f7d52;   /* slightly brighter green */
+}
+
 .legend {
   display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center;
   font-family: var(--sans); font-size: 13px; color: var(--ink-soft);
@@ -24,24 +34,38 @@
   display: inline-flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 12px; font-family: var(--sans);
 }
-.swatch.t-error { background: var(--bad); }
-.swatch.t-frame { background: var(--accent); }
-.swatch.t-agree { background: var(--good); }
+.swatch.t-error { background: var(--mk-error); }
+.swatch.t-frame { background: var(--mk-frame); }
+.swatch.t-agree { background: var(--mk-agree); }
 
 /* Scorecard strip */
 .scorecard {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 14px; max-width: 52rem; margin: 18px auto 0;
 }
 .scorecard .sc {
   background: #fff; border: 1px solid var(--border); border-radius: 12px;
   padding: 16px 18px; font-family: var(--sans);
+  display: flex; align-items: center; gap: 16px;
 }
-.scorecard .sc b { display: block; font-size: 30px; line-height: 1; font-family: var(--serif); }
-.scorecard .sc.error b { color: var(--bad); }
-.scorecard .sc.frame b { color: var(--accent); }
-.scorecard .sc.agree b { color: var(--good); }
-.scorecard .sc span { display: block; font-size: 12.5px; color: var(--muted); margin-top: 7px; line-height: 1.45; }
+.scorecard .sc b {
+  font-size: 48px; line-height: .9; font-family: var(--serif); flex: none;
+}
+.scorecard .sc.error b { color: var(--mk-error); }
+.scorecard .sc.frame b { color: var(--mk-frame); }
+.scorecard .sc.agree b { color: var(--mk-agree); }
+.scorecard .sc span { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+.scorecard-head {
+  max-width: 52rem; margin: 22px auto 0; font-family: var(--sans);
+  font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--muted);
+}
+.scorecard-foot {
+  max-width: 52rem; margin: 12px auto 0; font-family: var(--sans);
+  font-size: 13px; color: var(--muted);
+}
+.scorecard-foot a { color: var(--primary); font-weight: 600; text-decoration: none; }
+.scorecard-foot a:hover { text-decoration: underline; }
 
 /* The two-column drill-through grid */
 .letter-grid {
@@ -87,12 +111,12 @@
   transition: background .15s, box-shadow .15s;
 }
 .claim:hover { background: linear-gradient(transparent 0%, rgba(138,109,47,.18) 0%); }
-.claim.t-error { background: linear-gradient(transparent 62%, rgba(140,59,46,.22) 62%); }
-.claim.t-error:hover { background: rgba(140,59,46,.16); }
-.claim.t-frame { background: linear-gradient(transparent 62%, rgba(138,109,47,.24) 62%); }
-.claim.t-frame:hover { background: rgba(138,109,47,.18); }
-.claim.t-agree { background: linear-gradient(transparent 62%, rgba(46,110,78,.22) 62%); }
-.claim.t-agree:hover { background: rgba(46,110,78,.16); }
+.claim.t-error { background: linear-gradient(transparent 60%, rgba(178,58,40,.30) 60%); }
+.claim.t-error:hover { background: rgba(178,58,40,.20); }
+.claim.t-frame { background: linear-gradient(transparent 60%, rgba(168,128,30,.34) 60%); }
+.claim.t-frame:hover { background: rgba(168,128,30,.22); }
+.claim.t-agree { background: linear-gradient(transparent 60%, rgba(47,125,82,.30) 60%); }
+.claim.t-agree:hover { background: rgba(47,125,82,.20); }
 .claim.sel { box-shadow: 0 0 0 2px var(--primary); background: var(--primary-soft); }
 .claim-num {
   display: inline-flex; align-items: center; justify-content: center;
@@ -101,9 +125,9 @@
   vertical-align: super; line-height: 1; color: #fff; background: var(--accent);
   position: relative; top: -1px;
 }
-.claim.t-error .claim-num { background: var(--bad); }
-.claim.t-frame .claim-num { background: var(--accent); }
-.claim.t-agree .claim-num { background: var(--good); }
+.claim.t-error .claim-num { background: var(--mk-error); }
+.claim.t-frame .claim-num { background: var(--mk-frame); }
+.claim.t-agree .claim-num { background: var(--mk-agree); }
 
 /* Floating short-tip on hover */
 #claimTip {
@@ -142,9 +166,9 @@
   text-transform: uppercase; margin-bottom: 7px; display: inline-block;
   padding: 3px 9px; border-radius: 100px;
 }
-.reb-tag.t-error { background: var(--bad-soft); color: var(--bad); }
-.reb-tag.t-frame { background: var(--accent-soft); color: var(--accent); }
-.reb-tag.t-agree { background: var(--good-soft); color: var(--good); }
+.reb-tag.t-error { background: var(--bad-soft); color: var(--mk-error); }
+.reb-tag.t-frame { background: var(--accent-soft); color: var(--mk-frame); }
+.reb-tag.t-agree { background: var(--good-soft); color: var(--mk-agree); }
 .reb-head h3 { margin: 0; font-size: 17.5px; line-height: 1.3; }
 .reb-quote {
   font-family: var(--serif); font-style: italic; color: var(--ink-soft);
@@ -232,11 +256,13 @@
     <span class="lg"><span class="swatch t-agree"></span> Common ground</span>
   </div>
 
+  <p class="scorecard-head">Our tally of the letter&rsquo;s claims:</p>
   <div class="scorecard">
-    <div class="sc error"><b>9</b><span>Statements that are factually wrong or describe the opposite of the bill&rsquo;s effect</span></div>
-    <div class="sc frame"><b>6</b><span>Statements that are technically arguable but framed in a way that omits decisive context</span></div>
+    <div class="sc error"><b>8</b><span>Statements that are factually wrong or describe the opposite of the bill&rsquo;s effect</span></div>
+    <div class="sc frame"><b>7</b><span>Statements that are technically arguable but framed in a way that overlooks critical context</span></div>
     <div class="sc agree"><b>2</b><span>Premises we fully accept &mdash; and that argue <em>for</em> the bill, not against it</span></div>
   </div>
+  <p class="scorecard-foot">Each claim below is marked and answered in full. See also <a href="#leaveout">what the letter leaves out &darr;</a></p>
 
   <div class="letter-grid">
 
@@ -248,7 +274,7 @@
       <p class="l-salutation">Dear Governor Ayotte:</p>
 
       <p>We, the undersigned organizations, write to respectfully ask that you veto HB 1336, legislation that
-        <span class="claim t-error" data-claim="c2" tabindex="0">would allow landlords to require certain prospective tenants to pay an additional month&rsquo;s rent upfront as a second security deposit<span class="claim-num">1</span></span>.</p>
+        <span class="claim t-frame" data-claim="c2" tabindex="0">would allow landlords to require certain prospective tenants to pay an additional month&rsquo;s rent upfront as a second security deposit<span class="claim-num">1</span></span>.</p>
 
       <p><span class="claim t-agree" data-claim="cCrisis" tabindex="0">New Hampshire is in the midst of a housing affordability crisis.<span class="claim-num">0</span></span> Across our state, renters are already
         struggling to keep up with rising housing costs, low vacancy rates, and limited housing choices, with
@@ -329,18 +355,18 @@
 
   </div>
 
-  <div class="leaveout">
+  <div class="leaveout" id="leaveout">
     <h2>What the letter leaves out</h2>
     <p class="lo-sub">A few facts that are hard to square with a call for a veto.</p>
     <ul>
-      <li><strong>The one-month cap is preserved.</strong> For every applicant who meets a landlord&rsquo;s disclosed criteria, the deposit limit is unchanged. The bill only adds a separate, capped, refundable instrument for applicants who would otherwise be <em>denied</em>. <a href="analysis.html#sec-9-4">§9.4</a></li>
-      <li><strong>It is voluntary on both sides.</strong> &ldquo;An applicant may offer, and a landlord may accept or suggest&rdquo; &mdash; the bill compels no one to pay, and no one to approve. <a href="analysis.html#sec-1-3">§1.3</a></li>
-      <li><strong>It costs the state nothing</strong> and preempts no housing-supply reform. It is additive, not a substitute. <a href="analysis.html#sec-9-13">§9.13</a></li>
-      <li><strong>It turns deposit charity into revolving capital.</strong> Refunds can return to the charity, employer, or family that funded the deposit &mdash; roughly 1,546 more families housed per $1M of annual charitable inflow over ten years. <a href="analysis.html#sec-4-5">§4.5</a></li>
-      <li><strong>It protects municipal welfare budgets.</strong> The Senate amendment returns RSA&nbsp;165 deposit funds directly to the municipality. <a href="analysis.html#sec-8-6">§8.6</a></li>
-      <li><strong>The affordable segment is shielded by design.</strong> The income gate is mathematically unavailable below roughly $2,104/month rent &mdash; above every NH studio and one-bedroom Fair Market Rent. <a href="analysis.html#sec-appendix-a">Appendix A</a></li>
-      <li><strong>The process was deliberate and bipartisan-tested.</strong> The bill passed the House (OTP/A), the Senate (14&ndash;9), and House concurrence (180&ndash;162); New Hampshire Legal Assistance moved from opposition to <em>neutral</em> on the amended bill. <a href="analysis.html#sec-8">§8</a></li>
-      <li><strong>The realistic alternative is denial.</strong> Remove the tool and the marginal applicant does not get a cheaper apartment &mdash; they get a &ldquo;no.&rdquo; <a href="analysis.html#sec-9-8">§9.8</a></li>
+      <li><strong>The one-month cap is preserved.</strong> For every applicant who meets a landlord&rsquo;s disclosed criteria, the deposit limit is unchanged. The bill only adds a separate, capped, refundable instrument for applicants who would otherwise be <em>denied</em>. <a href="analysis.html#sec-9-4">Analysis §9.4</a></li>
+      <li><strong>It is voluntary on both sides.</strong> &ldquo;An applicant may offer, and a landlord may accept or suggest&rdquo; &mdash; the bill compels no one to pay, and no one to approve. <a href="analysis.html#sec-1-3">Analysis §1.3</a></li>
+      <li><strong>It costs the state nothing</strong> and does nothing to preempt other supply reforms. It is additive, not a substitute. <a href="analysis.html#sec-9-10">Analysis §9.10</a></li>
+      <li><strong>It turns deposit charity into revolving capital.</strong> Refunds can return to the charity, employer, or family that funded the deposit &mdash; roughly 1,546 more families housed per $1M of annual charitable inflow over ten years. <a href="analysis.html#sec-4-5">Analysis §4.5</a></li>
+      <li><strong>It protects municipal welfare budgets.</strong> The Senate amendment returns RSA&nbsp;165 deposit funds directly to the municipality. <a href="analysis.html#sec-8-6">Analysis §8.6</a></li>
+      <li><strong>The affordable segment is shielded by design.</strong> The income-based deposit is mathematically impossible below roughly $2,104/month rent &mdash; above every NH studio and one-bedroom Fair Market Rent &mdash; so it can never raise costs in the most affordable units. <a href="analysis.html#sec-appendix-a">Analysis Appendix A</a></li>
+      <li><strong>The process was deliberate and negotiated.</strong> New Hampshire Legal Assistance collaborated on the bill text and moved from <em>opposed</em> to <em>neutral</em> on the compromise language; the bill then cleared the House (OTP/A), the Senate (14&ndash;9), and House concurrence (180&ndash;162). <a href="analysis.html#sec-8">Analysis §8</a></li>
+      <li><strong>The realistic alternative is denial.</strong> Remove the tool and the marginal applicant does not get a cheaper apartment &mdash; they are simply denied the one they applied for. <a href="analysis.html#sec-9-8">Analysis §9.8</a></li>
     </ul>
   </div>
 
@@ -384,29 +410,29 @@ window.REBUTTALS = {
     quote: "New Hampshire is in the midst of a housing affordability crisis",
     html:
       "<p>We accept this premise without reservation &mdash; it is precisely why access tools matter.</p>" +
-      "<p>And it points toward the bill, not away from it. HB 1336 expands housing <em>choice</em> for people whose finances are only slightly a stretch. A family at 2.9&times; the rent could pursue a home in a more expensive neighborhood &mdash; for a better school system, a shorter commute, proximity to care &mdash; instead of being turned away at the threshold. In a tight market, more ways to reach a &ldquo;yes&rdquo; is exactly what a crisis calls for.</p>",
+      "<p>And it points toward the bill, not away from it. HB 1336 expands housing <em>choice</em> for people whose finances are only slightly a stretch. A family at 2.9&times; the rent could pursue a home in a more expensive neighborhood &mdash; for a better school system, a shorter commute, proximity to care &mdash; instead of being turned away at the threshold. In a tight market, more ways to reach a &ldquo;yes&rdquo; (an approval) is exactly what a crisis calls for.</p>",
     refs: [["§2 — The problem the bill solves", "analysis.html#sec-2"], ["§9.13 — Risk, choice & participation", "analysis.html#sec-9-13"]]
   },
 
   c1: {
     tier: "t-frame",
     tag: "Real number — but it argues the other way",
-    tip: "True statistic, but the bill's income gate specifically shields the cost-burdened renters it describes.",
+    tip: "True statistic, but the bill's income prong specifically shields the cost-burdened renters it describes.",
     quote: "almost 46 percent of renters … paying more than 30 percent of their income to housing costs",
     html:
       "<p>We don&rsquo;t dispute the cost-burden figure &mdash; it is exactly why housing access matters. But it cuts against the letter&rsquo;s conclusion rather than for it.</p>" +
-      "<p>The bill&rsquo;s income gate (<a class='cite' data-statute='540-A:9' data-para='II(b)' href='#'>RSA 540-A:9, II(b)</a>) opens an income-based deposit option <strong>only</strong> when household income already exceeds 350% of the federal poverty guideline (about $75,740 for a household of two in 2026) <em>and</em> the landlord&rsquo;s ratio is no stricter than 3&times; rent. The cost-burdened renters this 46% describes are, by the arithmetic, largely <strong>excluded from the income gate entirely</strong>.</p>" +
-      "<p>The lowest rent at which an income-based deposit is even possible is roughly $2,104/month &mdash; above every New Hampshire studio and one-bedroom Fair Market Rent. The affordable segment is protected by design.</p>",
+      "<p>The bill&rsquo;s income-eligibility prong &mdash; one of five disclosed criteria, or &ldquo;prongs,&rdquo; that can open a conditional deposit (<a class='cite' data-statute='540-A:9' data-para='II(b)' href='#'>RSA 540-A:9, II(b)</a>) &mdash; opens an income-based deposit option <strong>only</strong> when household income already exceeds 350% of the federal poverty guideline (about $75,740 for a household of two in 2026) <em>and</em> the landlord&rsquo;s ratio is no stricter than 3&times; rent. The cost-burdened renters this 46% describes are, by the arithmetic, largely <strong>excluded from the income prong entirely</strong>.</p>" +
+      "<p>Put concretely: the income-based deposit is mathematically impossible below roughly $2,104/month rent &mdash; above every New Hampshire studio and one-bedroom Fair Market Rent. It simply cannot be used to add cost in the most affordable units &mdash; the affordable segment is excluded by design, as part of the negotiated agreement. That exclusion is deliberate: it keeps financially strained households from overextending into a deposit they can&rsquo;t sustain and lining themselves up for a nonpayment eviction. (A marginal applicant in a cheaper unit can still be helped through the credit or references prongs &mdash; but the income path can never raise their costs.)</p>",
     refs: [["§9.12 — Normalization & the income floor", "analysis.html#sec-9-12"], ["Appendix A — Fair Market Rents", "analysis.html#sec-appendix-a"]]
   },
 
   c2: {
-    tier: "t-error",
-    tag: "Factual error — &ldquo;require&rdquo;",
-    tip: "The bill lets the two sides mutually agree to a deposit in lieu of rejection — and the status quo already allows MORE money upfront.",
+    tier: "t-frame",
+    tag: "&ldquo;Require&rdquo; overstates it — the deposit is mutually agreed",
+    tip: "No landlord can unilaterally require this; it's a deposit the two sides agree to in lieu of rejection — and the status quo already allows MORE money upfront.",
     quote: "would allow landlords to require … an additional month’s rent upfront as a second security deposit",
     html:
-      "<p>This bill is not built around requirements, but rather as a voluntary framework to enable the landlord and the tenant to <strong>mutually agree</strong> to a regulated conditional deposit (RCD) in lieu of rejection or a more burdensome compensating factor &mdash; and that rejection or burden is the true counterfactual. &ldquo;An applicant may offer, and a landlord may accept or suggest&rdquo; (<a class='cite' data-statute='540-A:9' data-para='II' href='#'>RSA 540-A:9, II</a>); nothing compels a landlord to accept one or to approve anyone (<a class='cite' data-statute='540-A:9' data-para='III(a)' href='#'>III(a)</a>&ndash;<a class='cite' data-statute='540-A:9' data-para='III(b)' href='#'>(b)</a>).</p>" +
+      "<p>This bill is built as a voluntary framework to enable the landlord and the tenant to <strong>mutually agree</strong> to a regulated conditional deposit (RCD) in lieu of rejection or a more burdensome compensating factor &mdash; and that rejection or burden is the true counterfactual. &ldquo;An applicant may offer, and a landlord may accept or suggest&rdquo; (<a class='cite' data-statute='540-A:9' data-para='II' href='#'>RSA 540-A:9, II</a>); nothing compels a landlord to accept one or to approve anyone (<a class='cite' data-statute='540-A:9' data-para='III(a)' href='#'>III(a)</a>&ndash;<a class='cite' data-statute='540-A:9' data-para='III(b)' href='#'>(b)</a>).</p>" +
       "<p>Under current law, there is no statutory cap on the amount of prepaid rent that can be collected upfront, as long as rent is charged on a quarterly or less frequent basis (<a class='cite' data-statute='540-A:6' data-para='I(a)' href='#'>RSA 540-A:6, I(a)</a>). In practice, that means landlords can currently collect 3&ndash;12+ months of rent <strong>and</strong> a security deposit, or 4 to 13+ months&rsquo; worth of rent upfront.</p>" +
       "<p>The RCD path tops out at <strong>three months upfront</strong> (first month + one-month deposit + one-month RCD), and the RCD is refundable. The letter is therefore arguing that because renters are cost-burdened we should keep a status quo that demands <em>more</em> money upfront, less of it refundable. That is backwards.</p>" +
       "<p>Uncapped deposits are also <strong>already legal</strong> for a large slice of the market: under the <a class='cite' data-statute='540-A:5' data-para='I' href='#'>RSA 540-A:5, I</a> exemption, an owner renting a single-family home (and owning no other rental), or renting within an owner-occupied building of five units or fewer, is not bound by the one-month cap at all &mdash; with none of this bill&rsquo;s disclosure, re-screening, refund, or CPA protections. HB 1336 takes an existing, <em>less</em>-regulated practice and brings a more disciplined version of it to the professional segment.</p>",
@@ -419,12 +445,12 @@ window.REBUTTALS = {
     tip: "Three forms of ‘or more’ already exist in NH law — prepaid rent, surety bonds, and exempt-landlord deposits — all less regulated than what the bill proposes. The bill creates a new option with a lower total cost than what is legal today.",
     quote: "(or more)",
     html:
-      "<p>Correct that &ldquo;or more&rdquo; exists &mdash; and HB 1336 <strong>creates a new option with a lower total cost than the options that are currently legal today</strong>. That parenthetical already describes three separate practices in current New Hampshire law, all of them more expansive and less regulated than the bill&rsquo;s conditional deposit.</p>" +
+      "<p>Let&rsquo;s look at what &ldquo;or more&rdquo; actually means under New Hampshire law and prevailing industry practice. That parenthetical points to three separate things &mdash; all of them already legal today, and all of them <em>more</em> expansive and <em>less</em> regulated than the bill&rsquo;s conditional deposit.</p>" +
       "<p><strong>Prepaid rent.</strong> Nothing in NH law caps how many months of rent a landlord can require up front, as long as it is collected in consecutive, not-less-than-quarterly installments. A landlord today can legally require three, six, or twelve months of rent &mdash; plus a one-month security deposit &mdash; before handing over a key, with no disclosure requirements, no refund obligation, and no CPA protection. The bill doesn&rsquo;t touch prepaid rent; it creates a regulated, capped, refundable alternative for landlords who want a modest extra cushion.</p>" +
       "<p><strong>Surety bond premiums.</strong> New Hampshire has no statutory cap on the cost of a residential surety bond. Premiums are non-refundable regardless of how the tenancy goes, and can easily exceed the cost of a regulated conditional deposit. A renter who pays a surety premium walks away with nothing at move-out. The bill&rsquo;s conditional deposit &mdash; capped at one additional month, returnable unless legitimately withheld &mdash; is strictly better for the tenant than this alternative that already exists.</p>" +
       "<p><strong>Exempt-landlord deposits.</strong> Owners of single-family rentals or owner-occupied buildings of five units or fewer are already exempt from the one-month cap (<a class='cite' data-statute='540-A:5' data-para='I' href='#'>RSA 540-A:5, I</a>). Those landlords can charge &ldquo;or more&rdquo; today &mdash; unlimited &mdash; with none of the bill&rsquo;s disclosure, re-screening, or refund protections. The bill leaves that exemption in place and creates a regulated path for the professional market that the exemption doesn&rsquo;t cover.</p>" +
-      "<p>In every case, current law already permits more than the bill would. The bill simply creates a new option with a lower total cost than the options that are currently legal today.</p>",
-    refs: [["§3.1 — The prepaid-rent comparator", "analysis.html#sec-3-1"], ["§3.4 — Enhanced deposits are already lawful", "analysis.html#sec-3-4"], ["§9.4 — The cap is preserved", "analysis.html#sec-9-4"]]
+      "<p>So in every case, &ldquo;or more&rdquo; already exists &mdash; and current law permits <em>more</em> than the bill would. What HB 1336 actually adds is a regulated option that costs the tenant <strong>less</strong>: capped at one additional month, refundable, disclosed, and re-screened. Less, not more.</p>",
+    refs: [["§3.1 — The prepaid-rent comparator", "analysis.html#sec-3-1"], ["§3.2 — Co-signers &amp; surety bonds", "analysis.html#sec-3-2"], ["§3.3 — Instrument-by-instrument comparison", "analysis.html#sec-3-3"], ["§3.4 — Enhanced deposits are already lawful", "analysis.html#sec-3-4"], ["§9.4 — The cap is preserved", "analysis.html#sec-9-4"]]
   },
 
   c4: {
@@ -433,9 +459,9 @@ window.REBUTTALS = {
     tip: "A QUALIFIED renter can never be charged this. The instrument exists only for applicants who fail a criterion.",
     quote: "qualified renters would need $6,072 available to rent the median 2-bedroom apartment",
     html:
-      "<p>This is the sentence doing the most work in the letter, and it contains the central error: the words <strong>&ldquo;qualified renters.&rdquo;</strong></p>" +
+      "<p>This single sentence carries the letter&rsquo;s argument &mdash; and it contains its central error: the words <strong>&ldquo;qualified renters.&rdquo;</strong></p>" +
       "<p>A qualified renter can <strong>never</strong> be asked for this deposit. By definition the instrument is available only for an applicant who <em>fails</em> one of five disclosed criteria (<a class='cite' data-statute='540-A:9' data-para='II' href='#'>RSA 540-A:9, II</a>); charging it to someone who meets the criteria violates the preserved one-month cap (<a class='cite' data-statute='540-A:6' data-para='I(a)' href='#'>RSA 540-A:6, I(a)</a>) and the CPA (<a class='cite' data-statute='540-A:8' data-para='I(c)' href='#'>540-A:8, I(c)</a>). So &ldquo;qualified renters would need $6,072&rdquo; describes a transaction the bill makes <strong>illegal</strong>. A qualified renter&rsquo;s move-in cost is exactly what it is today.</p>" +
-      "<p>There&rsquo;s a second problem with the same example: at $2,024 rent, the <em>income</em> gate isn&rsquo;t even available (it sits below the ~$2,104 floor). And the $6,072 figure assumes the applicant who <em>does</em> fail a criterion has zero alternatives &mdash; when the real alternative under current law is denial, or multi-month prepaid rent that can exceed $6,072 with none of the deposit&rsquo;s protections.</p>",
+      "<p>There&rsquo;s a second problem with the same example: at $2,024 rent, the <em>income</em> prong isn&rsquo;t even available (it sits below the ~$2,104 floor). And the $6,072 figure assumes the applicant who <em>does</em> fail a criterion has zero alternatives &mdash; when the real alternative under current law is denial, or multi-month prepaid rent that can exceed $6,072 with none of the deposit&rsquo;s protections.</p>",
     refs: [["§9.4 — &ldquo;It undermines the cap&rdquo;", "analysis.html#sec-9-4"], ["§9.1 — &ldquo;This raises move-in costs&rdquo;", "analysis.html#sec-9-1"], ["§9.5 — Who can be charged", "analysis.html#sec-9-5"]]
   },
 
@@ -445,9 +471,9 @@ window.REBUTTALS = {
     tip: "A tool a landlord uses to say 'yes' cannot, by itself, produce more 'no's. The record shows the opposite.",
     quote: "in practice, it is more likely to make housing harder – not easier – to obtain",
     html:
-      "<p>No mechanism is offered for how an <em>optional approval tool</em> &mdash; one a landlord can use only to reach a &ldquo;yes&rdquo; it would not otherwise reach &mdash; makes housing <em>harder</em> to obtain. The legislative record points the other way.</p>" +
-      "<p>For the applicant who fails a disclosed criterion, the status quo is not &ldquo;approved with one month.&rdquo; It is denial, a co-signer they may not have, a non-refundable surety-bond premium, or prepaid rent. One provider testified that of 51 applications in 2025, 16 needed a compensating factor and only 3 could be approved &mdash; <strong>13 houseable applicants turned away</strong> for lack of exactly the tool this bill creates.</p>" +
-      "<p>A tool that operates only to <em>enable</em> approvals cannot, by itself, make housing harder to get.</p>",
+      "<p>No mechanism is offered for how an <em>optional approval tool</em> &mdash; one a landlord can use only to reach a &ldquo;yes&rdquo; it would not otherwise reach &mdash; makes housing <em>harder</em> to obtain.</p>" +
+      "<p>For the applicant who fails a disclosed criterion, the status quo is not &ldquo;approved with one month.&rdquo; It is denial, a co-signer they may not have, a non-refundable surety-bond premium, or prepaid rent. One provider testified that of 51 applications in 2025, 16 needed a compensating factor and only 3 could be approved &mdash; 13 houseable applicants turned away for lack of exactly the tool this bill creates.</p>" +
+      "<p>HB 1336 only enables approvals a landlord could not otherwise reach; it cannot, by itself, make housing harder to get.</p>",
     refs: [["§9.8 — &ldquo;Landlords should just take the risk&rdquo;", "analysis.html#sec-9-8"], ["§2 — The problem the bill solves", "analysis.html#sec-2"]]
   },
 
@@ -461,7 +487,7 @@ window.REBUTTALS = {
       "<p><strong>Installments</strong> &mdash; the deposit may be paid over time, not in a lump sum (<a class='cite' data-statute='540-A:9' data-para='I' href='#'>RSA 540-A:9, I</a>).</p>" +
       "<p><strong>Third-party payors</strong> &mdash; family, employers, charities, churches, or municipalities may fund it, with the refund flowing back to <em>them</em> (<a class='cite' data-statute='540-A:7' data-para='I(b)' href='#'>RSA 540-A:7, I(b)</a>).</p>" +
       "<p><strong>Re-screening</strong> &mdash; the money comes back as the applicant&rsquo;s file improves (<a class='cite' data-statute='540-A:9' data-para='VI' href='#'>RSA 540-A:9, VI</a>).</p>" +
-      "<p>And a word on the list itself: a <em>fixed</em> income is a stable, predictable income &mdash; not the absence of savings. For the genuinely lowest-income households, the income gate is unavailable entirely. The honest comparison is not &ldquo;deposit vs. nothing&rdquo; &mdash; it is &ldquo;deposit vs. denial.&rdquo;</p>",
+      "<p>And a word on the list itself: a <em>fixed</em> income is a stable, predictable income &mdash; not the absence of savings. For the genuinely lowest-income households, the income prong is unavailable entirely. The honest comparison is not &ldquo;deposit vs. nothing&rdquo; &mdash; it is &ldquo;deposit vs. denial.&rdquo;</p>",
     refs: [["§9.1 — Move-in costs", "analysis.html#sec-9-1"], ["§9.3 — &ldquo;Only helps people with money&rdquo;", "analysis.html#sec-9-3"], ["The capital model (interactive)", "calculator.html"]]
   },
 
@@ -508,19 +534,19 @@ window.REBUTTALS = {
     quote: "This bill could impact a wide range of Granite Staters, including: …",
     html:
       "<p>Every population on this list is a population the bill was written to move from <strong>denied</strong> to <strong>approved</strong>. The letter lists the bill&rsquo;s intended beneficiaries as if they were its victims.</p>" +
-      "<p><strong>Limited credit / medical debt / student loans</strong> &rarr; the credit gate caps at 650, below New Hampshire&rsquo;s 697&ndash;738 average, for exactly these applicants (<a class='cite' data-statute='540-A:9' data-para='II(a)' href='#'>RSA 540-A:9, II(a)</a>).</p>" +
-      "<p><strong>Thin or unverifiable rental histories</strong> &rarr; the references gate (<a class='cite' data-statute='540-A:9' data-para='II(e)' href='#'>II(e)</a>) applies <em>only</em> when <strong>both</strong> the present and most-recent prior landlord references can&rsquo;t be verified &mdash; the true first-time renter, the owner returning to renting, the applicant whose former landlords have left the business. Anyone with a single contactable landlord simply qualifies the normal way (Examples 6.2, 6.4).</p>" +
+      "<p><strong>Limited credit / medical debt / student loans</strong> &rarr; the credit prong caps at 650, below New Hampshire&rsquo;s 697&ndash;738 average, for exactly these applicants (<a class='cite' data-statute='540-A:9' data-para='II(a)' href='#'>RSA 540-A:9, II(a)</a>).</p>" +
+      "<p><strong>Thin or unverifiable rental histories</strong> &rarr; the references prong (<a class='cite' data-statute='540-A:9' data-para='II(e)' href='#'>II(e)</a>) applies <em>only</em> when <strong>both</strong> the present and most-recent prior landlord references can&rsquo;t be verified &mdash; the true first-time renter, the owner returning to renting, the applicant whose former landlords have left the business. Anyone with a single contactable landlord simply qualifies the normal way (Examples 6.2, 6.4).</p>" +
       "<p><strong>People exiting homelessness or relying on nonprofit/municipal assistance</strong> &rarr; the third-party-payor refund and revolving-capital mechanism (<a class='cite' data-statute='540-A:7' data-para='I(b)' href='#'>540-A:7, I(b)</a>; Example 6.6).</p>",
     refs: [["§6 — Practical examples", "analysis.html#sec-6"], ["§9.7 — Equity between applicants", "analysis.html#sec-9-7"], ["The capital model (interactive)", "calculator.html"]]
   },
 
   c10b: {
     tier: "t-error",
-    tag: "This is the gate built for them",
-    tip: "The references gate, II(e), exists specifically so thin-file applicants can be approved instead of denied.",
+    tag: "This is the prong built for them",
+    tip: "The references prong, II(e), exists specifically so thin-file applicants can be approved instead of denied.",
     quote: "Young adults and first-time renters who may not have extensive landlord references",
     html:
-      "<p>This is not a population the bill burdens &mdash; it is the population the references gate was written to rescue.</p>" +
+      "<p>This is not a population the bill burdens &mdash; it is the population the references prong was written to rescue.</p>" +
       "<p>Under <a class='cite' data-statute='540-A:9' data-para='II(e)' href='#'>RSA 540-A:9, II(e)</a>, an applicant whose present and most-recent prior landlord references cannot be verified gains a regulated path to <strong>approval</strong> instead of the automatic denial they face today. After twelve months of timely payment they typically <em>have</em> the very reference they lacked &mdash; and can re-screen for a refund (<a class='cite' data-statute='540-A:9' data-para='VI' href='#'>VI</a>). See Examples 6.2 (first-time renter) and 6.4 (returning renter).</p>",
     refs: [["Example 6.2 — Thin file", "analysis.html#sec-6-2"], ["Example 6.4 — Returning renter", "analysis.html#sec-6-4"], ["§9.14 — The references criterion", "analysis.html#sec-9-14"]]
   },
@@ -539,23 +565,23 @@ window.REBUTTALS = {
   cVet: {
     tier: "t-frame",
     tag: "The example doesn't quite hold together",
-    tip: "Stable housing means a reachable current landlord; frequent moves means more references, not fewer. Either way, the gate is narrow.",
+    tip: "Stable housing means a reachable current landlord; frequent moves means more references, not fewer. Either way, the prong is narrow.",
     quote: "Veterans who have lived in stable housing for years but may not be able to produce historical rental documentation due to frequent moves",
     html:
       "<p>We want veterans housed, and the bill helps &mdash; but this particular description doesn&rsquo;t quite hold together.</p>" +
-      "<p>&ldquo;Stable housing for years&rdquo; frequently implies a current landlord who can be reached for a reference. &ldquo;Frequent moves&rdquo; implies <em>more</em> prior landlords, not fewer. The references gate (<a class='cite' data-statute='540-A:9' data-para='II(e)' href='#'>RSA 540-A:9, II(e)</a>) opens only when <strong>both</strong> the present <em>and</em> the most-recent prior landlord reference can&rsquo;t be verified &mdash; if either one checks out, the applicant simply qualifies the ordinary way.</p>" +
-      "<p>So a veteran in stable housing is already fine. And the veteran the gate genuinely reaches &mdash; someone whose verifiable history is a true blank, perhaps after years in base housing, deployments, or family moves &mdash; is exactly who it was written to convert from a denial into an approval. Either way, this is a beneficiary of the bill, not a casualty of it.</p>",
+      "<p>&ldquo;Stable housing for years&rdquo; frequently implies a current landlord who can be reached for a reference. &ldquo;Frequent moves&rdquo; implies <em>more</em> prior landlords, not fewer. The references prong (<a class='cite' data-statute='540-A:9' data-para='II(e)' href='#'>RSA 540-A:9, II(e)</a>) opens only when <strong>both</strong> the present <em>and</em> the most-recent prior landlord reference can&rsquo;t be verified &mdash; if either one checks out, the applicant simply qualifies the ordinary way.</p>" +
+      "<p>So a veteran in stable housing is already fine. And the veteran the prong genuinely reaches &mdash; someone whose verifiable history is a true blank, perhaps after years in base housing, deployments, or family moves &mdash; is exactly who it was written to convert from a denial into an approval. Either way, this is a beneficiary of the bill, not a casualty of it.</p>",
     refs: [["Example 6.4 — Returning renter", "analysis.html#sec-6-4"], ["§9.14 — The references criterion", "analysis.html#sec-9-14"], ["§9.7 — Equity between applicants", "analysis.html#sec-9-7"]]
   },
 
   c10d: {
     tier: "t-error",
     tag: "These are the people the bill was built for — literally",
-    tip: "The bill's drafter used an enhanced deposit to house someone leaving homelessness. That experience helped inspire the bill.",
+    tip: "The bill's original drafter once approved a no-credit applicant with a larger, refundable deposit — and only later learned they were leaving homelessness. Proof the tool reaches even the most vulnerable.",
     quote: "Individuals exiting homelessness, shelters, or transitional housing programs",
     html:
       "<p>This population is not incidental to the bill &mdash; it is part of its origin story.</p>" +
-      "<p>Operating as an exempt small landlord under the <a class='cite' data-statute='540-A:5' data-para='I' href='#'>RSA 540-A:5, I</a> exemption (which carries <em>no</em> deposit cap at all), the bill&rsquo;s original drafter used an enhanced deposit to approve an applicant coming out of homelessness who would otherwise have been denied. It worked. That real experience &mdash; that a modest, refundable extra deposit can convert a &ldquo;no&rdquo; into a stable tenancy &mdash; is a large part of why HB 1336 brings the same tool, now wrapped in disclosure, re-screening, refund, and CPA protections, to the professional rental market.</p>" +
+      "<p>Operating as an exempt small landlord under the <a class='cite' data-statute='540-A:5' data-para='I' href='#'>RSA 540-A:5, I</a> exemption (which carries <em>no</em> deposit cap at all), the bill&rsquo;s original drafter once approved an applicant who had <strong>no verifiable credit history</strong> &mdash; agreeing to a larger, fully refundable deposit rather than turning the applicant away. Only afterward did the drafter learn the applicant had been exiting homelessness. The lesson stuck: a modest, refundable additional deposit can convert a &ldquo;no&rdquo; into a stable tenancy, even for the most vulnerable applicants. That experience is a large part of why HB 1336 brings the same tool &mdash; now wrapped in disclosure, re-screening, refund, and CPA protections &mdash; to the professional rental market.</p>" +
       "<p>Pair it with the third-party-payor refund (<a class='cite' data-statute='540-A:7' data-para='I(b)' href='#'>RSA 540-A:7, I(b)</a>) and a shelter, charity, or transitional-housing program can fund that deposit as <strong>recyclable</strong> capital &mdash; one fund, many families.</p>",
     refs: [["§3.4 — Enhanced deposits already lawful", "analysis.html#sec-3-4"], ["Example 6.6 — Charity as a revolving fund", "analysis.html#sec-6-6"], ["The capital model (interactive)", "calculator.html"]]
   },
@@ -567,9 +593,10 @@ window.REBUTTALS = {
     quote: "HB 1336 does nothing to address … a shortage of homes that people can afford",
     html:
       "<p>Entirely true &mdash; and not a flaw. No deposit bill builds housing, and no housing-supply bill fixes a thin-file applicant&rsquo;s denial next week. The two are <strong>complements, not substitutes</strong>.</p>" +
+      "<p>And more supply, by itself, does not get a marginal applicant approved. A landlord weighing a thin-file or borderline application against the cost of a short vacancy can reasonably choose to wait for a stronger applicant &mdash; even in a looser market, holding the unit is often the safer call. A regulated, refundable deposit gives that landlord a concrete reason to say <em>yes</em> now &mdash; something no amount of new construction does on its own.</p>" +
       "<p>It also does something the letter overlooks: it increases <em>accessible</em> supply. An applicant who earns 2.9&times; the rent, or whose file falls just short on a single criterion, can reach units &mdash; and neighborhoods &mdash; that are closed to them today, advancing housing choice and economic integration without a single new unit being built. And by giving landlords a regulated way to manage marginal risk, it modestly improves the incentive to <em>participate</em> in the rental market at all. We won&rsquo;t overclaim a supply effect &mdash; but the direction of that incentive runs opposite to the letter&rsquo;s premise.</p>" +
-      "<p>HB 1336 costs the state nothing, preempts no supply reform, and is fully additive (§9.13). Faulting an access tool for not being a supply tool is like faulting a seatbelt for not being a highway &mdash; both worth having, neither a substitute for the other.</p>",
-    refs: [["§9.10 — &ldquo;Solve it with subsidy&rdquo;", "analysis.html#sec-9-10"], ["§9.13 — The risk-allocation objection", "analysis.html#sec-9-13"]]
+      "<p>HB 1336 costs the state nothing and does nothing to preempt other supply reforms. Faulting an access tool for not being a supply tool is like faulting a seatbelt for not being a highway &mdash; both worth having, neither a substitute for the other.</p>",
+    refs: [["§9.10 — &ldquo;Solve it with subsidy&rdquo;", "analysis.html#sec-9-10"]]
   },
 
   c12: {
@@ -579,7 +606,7 @@ window.REBUTTALS = {
     quote: "increase supply … not create new upfront expenses for renters already struggling",
     html:
       "<p>Two problems with the word <em>not</em>.</p>" +
-      "<p><strong>It sets up a false choice.</strong> Supply reform and access tools are not rivals &mdash; supporters of this bill overwhelmingly support building more housing too. Doing one does not preclude the other.</p>" +
+      "<p><strong>It sets up a false choice.</strong> Supply reform and access tools are not rivals &mdash; supporters of this bill overwhelmingly support building more housing too. Doing one does not preclude the other, and they solve different problems: new construction can lower rents over time, but it does not get a marginal or thin-file applicant approved for any of those units. Only an access tool does that.</p>" +
       "<p><strong>It mislocates the cost.</strong> The bill imposes nothing on the struggling renter who qualifies &mdash; the one-month cap is intact (<a class='cite' data-statute='540-A:6' data-para='I(a)' href='#'>RSA 540-A:6, I(a)</a>). The only renter who ever pays this deposit is one who <em>fails</em> a disclosed criterion and <em>chooses</em> it over the alternative of not getting the apartment at all. That is a new option, not a new expense.</p>",
     refs: [["§9.10 — Subsidy vs. private capital", "analysis.html#sec-9-10"], ["§9.1 — Move-in costs", "analysis.html#sec-9-1"]]
   }
