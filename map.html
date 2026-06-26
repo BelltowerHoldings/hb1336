@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Move-in costs in national context · HB 1336-FN</title>
+<meta name="description" content="Interactive 50-state map comparing the total move-in funds a landlord may legally collect upfront — security deposit, first and last month, and prepaid rent — against New Hampshire.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="site-title" href="index.html">
+      HB 1336-FN
+      <span class="sub">Regulated Conditional Deposits · NH</span>
+    </a>
+    <nav class="site-nav">
+      <a href="index.html">Overview</a>
+      <a href="billtext.html">Bill Text</a>
+      <a href="analysis.html">Full Analysis</a>
+      <a href="coalition-letter.html">Coalition Letter</a>
+      <a href="calculator.html">Rental Assistance Capital Model</a>
+      <a href="faq.html">FAQ</a>
+      <a href="downloads.html">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+
+  <div class="page-header">
+    <p class="kicker">National context</p>
+    <h1>Move-in costs in national context</h1>
+    <p class="subtitle">
+      The right comparison is not each state&rsquo;s nominal security-deposit cap, but the
+      <strong>total amount a landlord may legally collect up front</strong> &mdash; first month&rsquo;s rent,
+      last month&rsquo;s rent, prepaid or advance rent, and the security deposit, combined. By that
+      measure New Hampshire is among the most restrictive states in the country, even where another
+      state&rsquo;s deposit cap alone looks similar.
+    </p>
+  </div>
+
+  <!-- ================= MOVE-IN COSTS MAP ================= -->
+  <section id="movein-map" style="max-width: 60rem; margin: 8px auto 0;">
+    <div class="movein-map">
+      <div class="mc-callout">
+        A one-month deposit cap can still sit beside a much larger move-in bill. Use the toggle to switch
+        between the two views: by <em>security deposit alone</em>, several states look as strict as New
+        Hampshire &mdash; but by <em>total move-in funds</em>, many of those same states (Massachusetts and
+        California among them) separately permit last month&rsquo;s rent or prepaid rent on top, so the cash a
+        renter must actually produce exceeds New Hampshire&rsquo;s. New Hampshire is the baseline in both views.
+      </div>
+
+      <div class="mc-toolbar">
+        <div class="mc-toggle" role="group" aria-label="Choose what the map measures">
+          <button type="button" class="mc-toggle-btn is-active" data-mode="total" aria-pressed="true">Total move-in funds</button>
+          <button type="button" class="mc-toggle-btn" data-mode="deposit" aria-pressed="false">Security deposit only</button>
+        </div>
+        <p class="mc-mode-note" id="moveinModeNote" aria-live="polite"></p>
+      </div>
+
+      <div class="mc-figurewrap">
+        <div class="mc-host-wrap">
+          <p class="mc-schematic-note" aria-hidden="true">Schematic tile map — tiles are arranged by region, not to geographic scale. Green = no cap; red = more restrictive than NH.</p>
+          <div id="moveinMapHost" class="mc-host"></div>
+          <div id="moveinTooltip" class="mc-tip" role="tooltip" hidden></div>
+        </div>
+      </div>
+
+      <div id="moveinLegend" class="mc-legend" aria-label="Map legend with category counts"></div>
+
+      <p class="mc-method">
+        Classification is based on ordinary private-market, unfurnished, no-pet residential tenancies and
+        measures total move-in cash legally collectible upfront, not merely the nominal security-deposit
+        cap.
+      </p>
+
+      <details class="mc-table-details">
+        <summary>View the full data as a table (all 50 states, with sources)</summary>
+        <div class="mc-table-scroll">
+          <table class="mc-table">
+            <caption class="visually-hidden">Total legally collectible move-in funds by state, compared to New Hampshire.</caption>
+            <thead>
+              <tr>
+                <th scope="col">State</th>
+                <th scope="col">Classification</th>
+                <th scope="col">Deposit cap</th>
+                <th scope="col">Total upfront</th>
+                <th scope="col">Security deposit</th>
+                <th scope="col">Advance / prepaid rent</th>
+                <th scope="col">Confidence</th>
+                <th scope="col">Source</th>
+              </tr>
+            </thead>
+            <tbody id="moveinTableBody"></tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <strong>HB 1336-FN — Regulated Conditional Deposits</strong><br>
+      Prepared for the Office of Governor Kelly A. Ayotte · June 2026<br>
+      Christopher M. Freeman · Executive Manager, Belltower Property Management · Drafter and Technical Resource, HB 1336-FN
+    </div>
+    <div>
+      <a href="index.html">Overview</a> ·
+      <a href="analysis.html">Full Analysis</a> ·
+      <a href="billtext.html">Bill Text</a> ·
+      <a href="calculator.html">Rental Assistance Capital Model</a> ·
+      <a href="faq.html">FAQ</a> ·
+      <a href="downloads.html">Resources</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+<script src="js/movein-cost-data.js"></script>
+<script src="js/movein-cost-map.js"></script>
+</body>
+</html>
