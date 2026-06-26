@@ -143,6 +143,11 @@
 #claimTip.t-error .tip-tag { color: #f0a99c; }
 #claimTip.t-frame .tip-tag { color: #e8cf86; }
 #claimTip.t-agree .tip-tag { color: #9fd4b6; }
+#claimTip .tip-cue {
+  display: block; margin-top: 8px; padding-top: 7px;
+  border-top: 1px solid rgba(255,255,255,.18);
+  font-size: 11px; font-weight: 700; letter-spacing: .02em; color: #fff; opacity: .92;
+}
 
 /* The rebuttal rail */
 .letter-rail {
@@ -695,7 +700,8 @@ window.REBUTTALS = {
     var r = R[c.dataset.claim];
     if (!r || !r.tip) return;
     tipEl.className = r.tier;
-    tipEl.innerHTML = '<span class="tip-tag">' + r.tag + '</span>' + r.tip;
+    tipEl.innerHTML = '<span class="tip-tag">' + r.tag + '</span>' + r.tip +
+      '<span class="tip-cue">Click to read the full response &rarr;</span>';
     tipEl.style.display = "block";
     var tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
     var left = Math.min(Math.max(8, x - tw / 2), window.innerWidth - tw - 8);
